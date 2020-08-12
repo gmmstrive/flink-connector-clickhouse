@@ -1,9 +1,11 @@
 # flink-connector-clickhouse
 
 #### 配置
+```shell
 cp clickhouse-jdbc-0.2.4.jar /flink/lib
 cp flink-connector-jdbc_2.11-1.11.1.jar /flink/lib
-cp guava-19.0.jar /flink/lib 
+cp guava-19.0.jar /flink/lib
+``` 
 
 #### flink sql 自定义 connector
 
