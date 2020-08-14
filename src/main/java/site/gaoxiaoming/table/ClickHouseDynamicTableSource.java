@@ -18,7 +18,7 @@ import org.apache.flink.table.types.logical.RowType;
 public class ClickHouseDynamicTableSource implements ScanTableSource {
 
     private final JdbcOptions options;
-    private TableSchema tableSchema;
+    private final TableSchema tableSchema;
 
     public ClickHouseDynamicTableSource(JdbcOptions options, TableSchema tableSchema) {
         this.options = options;
@@ -31,6 +31,7 @@ public class ClickHouseDynamicTableSource implements ScanTableSource {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ScanRuntimeProvider getScanRuntimeProvider(ScanContext runtimeProviderContext) {
 
         final JdbcDialect dialect = options.getDialect();

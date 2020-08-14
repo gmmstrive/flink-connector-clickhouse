@@ -37,7 +37,7 @@ public class ClickHouseSinkFunction extends RichSinkFunction<RowData> {
     }
 
     @Override
-    public void open(Configuration parameters) throws Exception {
+    public void open(Configuration parameters) {
         ClickHouseProperties properties = new ClickHouseProperties();
         properties.setUser(jdbcOptions.getUsername().orElse(null));
         properties.setPassword(jdbcOptions.getPassword().orElse(null));
@@ -60,8 +60,12 @@ public class ClickHouseSinkFunction extends RichSinkFunction<RowData> {
 
     @Override
     public void close() throws Exception {
-        if (stmt != null) stmt.close();
-        if (conn != null) conn.close();
+        if (stmt != null) {
+            stmt.close();
+        }
+        if (conn != null) {
+            conn.close();
+        }
     }
 
 }

@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
  * @author lucas
  */
 public class ClickHouseDynamicTableFactory implements DynamicTableSourceFactory, DynamicTableSinkFactory {
@@ -60,9 +59,6 @@ public class ClickHouseDynamicTableFactory implements DynamicTableSourceFactory,
             .stringType()
             .noDefaultValue()
             .withDescription("the format.");
-
-    public ClickHouseDynamicTableFactory() {
-    }
 
     @Override
     public String factoryIdentifier() {
