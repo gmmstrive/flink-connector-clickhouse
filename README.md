@@ -7,7 +7,7 @@ cp flink-connector-jdbc_2.11-1.11.1.jar /flink/lib
 cp guava-19.0.jar /flink/lib
 ``` 
 
-#### flink sql 自定义 connector
+#### flink sql 自定义 (优化 ClickHouse 集群连接 )connector
 
 ```sql
 %flink.conf
@@ -28,7 +28,7 @@ CREATE TABLE ch (
     create_date Date
 ) WITH (
     'connector' = 'clickhouse',
-    'url' = 'jdbc:clickhouse://172.16.8.164:8123/temp',
+    'url' = 'jdbc:clickhouse://172.16.8.164:8123,172.16.8.165:8123,172.16.8.166:8123/dc2', -- 可配置集群地址，写入时随机选择连接写入，不会一直使用一个连接写入
     'table-name' = 'user_name',
     'username' = 'default',
     'password' = '',

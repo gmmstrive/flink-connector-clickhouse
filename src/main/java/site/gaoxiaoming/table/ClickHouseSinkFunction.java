@@ -5,6 +5,7 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.connector.jdbc.internal.options.JdbcOptions;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 import org.apache.flink.table.data.RowData;
+import ru.yandex.clickhouse.BalancedClickhouseDataSource;
 import ru.yandex.clickhouse.ClickHouseConnection;
 import ru.yandex.clickhouse.ClickHouseDataSource;
 import ru.yandex.clickhouse.ClickHouseStatement;
@@ -41,9 +42,11 @@ public class ClickHouseSinkFunction extends RichSinkFunction<RowData> {
         ClickHouseProperties properties = new ClickHouseProperties();
         properties.setUser(jdbcOptions.getUsername().orElse(null));
         properties.setPassword(jdbcOptions.getPassword().orElse(null));
+        BalancedClickhouseDataSource dataSource;
         try {
             if (null == conn) {
-                conn = new ClickHouseDataSource(jdbcOptions.getDbURL(), properties).getConnection();
+                dataSource = new BalancedClickhouseDataSource(jdbcOptions.getDbURL(), properties);
+                conn = dataSource.getConnection();
             }
         } catch (SQLException e) {
             e.printStackTrace();
