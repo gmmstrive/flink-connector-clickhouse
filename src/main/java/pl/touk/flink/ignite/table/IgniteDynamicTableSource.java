@@ -1,4 +1,4 @@
-package site.gaoxiaoming.table;
+package pl.touk.flink.ignite.table;
 
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.connector.jdbc.dialect.JdbcDialect;
@@ -12,15 +12,12 @@ import org.apache.flink.table.connector.source.ScanTableSource;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.logical.RowType;
 
-/**
- * @author lucas
- */
-public class ClickHouseDynamicTableSource implements ScanTableSource {
+public class IgniteDynamicTableSource implements ScanTableSource {
 
     private final JdbcOptions options;
     private final TableSchema tableSchema;
 
-    public ClickHouseDynamicTableSource(JdbcOptions options, TableSchema tableSchema) {
+    public IgniteDynamicTableSource(JdbcOptions options, TableSchema tableSchema) {
         this.options = options;
         this.tableSchema = tableSchema;
     }
@@ -57,12 +54,12 @@ public class ClickHouseDynamicTableSource implements ScanTableSource {
 
     @Override
     public DynamicTableSource copy() {
-        return new ClickHouseDynamicTableSource(options, tableSchema);
+        return new IgniteDynamicTableSource(options, tableSchema);
     }
 
     @Override
     public String asSummaryString() {
-        return "ClickHouse Table Source";
+        return "Ignite Table Source";
     }
 
 }

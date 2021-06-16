@@ -1,14 +1,11 @@
-package site.gaoxiaoming.converter;
+package pl.touk.flink.ignite.converter;
 
 import org.apache.flink.connector.jdbc.internal.converter.AbstractJdbcRowConverter;
 import org.apache.flink.table.types.logical.RowType;
 
-/**
- * @author lucas
- */
-public class ClickHouseRowConverter extends AbstractJdbcRowConverter {
+public class IgniteRowConverter extends AbstractJdbcRowConverter {
 
-    public ClickHouseRowConverter(RowType rowType) {
+    public IgniteRowConverter(RowType rowType) {
         super(rowType);
     }
 
@@ -16,7 +13,7 @@ public class ClickHouseRowConverter extends AbstractJdbcRowConverter {
 
     @Override
     public String converterName() {
-        return "ClickHouse";
+        return "Ignite";
     }
 
 }
