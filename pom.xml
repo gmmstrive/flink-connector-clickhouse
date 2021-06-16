@@ -20,37 +20,23 @@ under the License.
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>site.gaoxiaoming</groupId>
-    <artifactId>flink-connector-clickhouse</artifactId>
+    <groupId>pl.touk</groupId>
+    <artifactId>flink-connector-ignite</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Flink Connector ClickHouse</name>
+    <name>Flink Connector Ignite</name>
 
     <properties>
         <java.version>1.8</java.version>
         <flink.version>1.11.1</flink.version>
         <log4j.version>2.12.1</log4j.version>
         <scala.binary.version>2.11</scala.binary.version>
-        <clickhouse-jdbc.version>0.2.4</clickhouse-jdbc.version>
+        <ignite.version>2.10.0</ignite.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>apache.snapshots</id>
-            <name>Apache Development Snapshot Repository</name>
-            <url>https://repository.apache.org/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <dependencies>
 
@@ -78,9 +64,9 @@ under the License.
         </dependency>
 
         <dependency>
-            <groupId>ru.yandex.clickhouse</groupId>
-            <artifactId>clickhouse-jdbc</artifactId>
-            <version>${clickhouse-jdbc.version}</version>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-core</artifactId>
+            <version>${ignite.version}</version>
             <scope>provided</scope>
         </dependency>
 

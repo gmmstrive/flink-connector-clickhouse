@@ -1,1 +1,1 @@
-site.gaoxiaoming.table.ClickHouseDynamicTableFactory
+pl.touk.flink.ignite.table.IgniteDynamicTableFactory
