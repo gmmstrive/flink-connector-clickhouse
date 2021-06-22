@@ -47,12 +47,6 @@ public class IgniteDynamicTableFactory implements DynamicTableSourceFactory, Dyn
             .noDefaultValue()
             .withDescription("the jdbc password.");
 
-    public static final ConfigOption<String> FORMAT = ConfigOptions
-            .key("format")
-            .stringType()
-            .noDefaultValue()
-            .withDescription("the format.");
-
     @Override
     public String factoryIdentifier() {
         return IDENTIFIER;
@@ -65,7 +59,6 @@ public class IgniteDynamicTableFactory implements DynamicTableSourceFactory, Dyn
         requiredOptions.add(TABLE_NAME);
         requiredOptions.add(USERNAME);
         requiredOptions.add(PASSWORD);
-        requiredOptions.add(FORMAT);
         return requiredOptions;
     }
 

@@ -1,0 +1,18 @@
+<configuration scan="true" scanPeriod="5 seconds">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+        </encoder>
+    </appender>
+    <root level="${DEFAULT_LOG_LEVEL:-INFO}">
+        <appender-ref ref="STDOUT"/>
+    </root>
+    <logger name="ch.qos.logback" level="WARN"/>
+    <logger name="org.apache.flink.api.java.typeutils.TypeExtractor" level="WARN"/>
+    <logger name="kafka" level="WARN"/>
+    <logger name="org.apache.zookeeper" level="WARN"/>
+
+    <logger name="pl.touk.flink" level="${TOUK_LOG_LEVEL:-DEBUG}"/>
+
+</configuration>
