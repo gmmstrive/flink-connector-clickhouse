@@ -12,13 +12,18 @@ import org.apache.flink.table.connector.source.ScanTableSource;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.logical.RowType;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+
 public class IgniteDynamicTableSource implements ScanTableSource {
 
     private final JdbcOptions options;
+    private final JdbcDatePartitionReadOptions readOptions;
     private final TableSchema tableSchema;
 
-    public IgniteDynamicTableSource(JdbcOptions options, TableSchema tableSchema) {
+    public IgniteDynamicTableSource(JdbcOptions options, JdbcDatePartitionReadOptions readOptions, TableSchema tableSchema) {
         this.options = options;
+        this.readOptions = readOptions;
         this.tableSchema = tableSchema;
     }
 
@@ -48,13 +53,27 @@ public class IgniteDynamicTableSource implements ScanTableSource {
                 .setRowDataTypeInfo((TypeInformation<RowData>) runtimeProviderContext
                         .createTypeInformation(tableSchema.toRowDataType()));
 
+        if (readOptions != null) {
+            LocalDate lowerBound = readOptions.getPartitionLowerBound();
+            LocalDate upperBound = readOptions.getPartitionUpperBound();
+            ZoneId timezone = readOptions.getTimezone();
+            builder.setParametersProvider(
+                    new JdbcTimestampBetweenParametersProvider(timezone, lowerBound, upperBound)
+            );
+            query += " WHERE " +
+                    dialect.quoteIdentifier(readOptions.getPartitionColumnName()) +
+                    " BETWEEN ? AND ?";
+        }
+
+        builder.setQuery(query);
+
         return InputFormatProvider.of(builder.build());
 
     }
 
     @Override
     public DynamicTableSource copy() {
-        return new IgniteDynamicTableSource(options, tableSchema);
+        return new IgniteDynamicTableSource(options, readOptions, tableSchema);
     }
 
     @Override

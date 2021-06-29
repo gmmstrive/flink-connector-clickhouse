@@ -4,9 +4,11 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 
 public class IgniteJdbcClient {
 
+    public static final String tableName = "TEST";
     private final int port;
 
     public IgniteJdbcClient(int port) {
@@ -14,29 +16,34 @@ public class IgniteJdbcClient {
     }
 
     public void schemaCreated() throws Exception {
-        execute("CREATE TABLE TEST (ID INT PRIMARY KEY, NAME VARCHAR, WEIGHT DECIMAL);");
+        execute("CREATE TABLE IF NOT EXISTS " + tableName + " (ID INT PRIMARY KEY, NAME VARCHAR, WEIGHT DECIMAL, DAY_DATE TIMESTAMP);");
     }
 
     public static class TestRecord {
         private final int id;
         private final String name;
         private final BigDecimal weight;
+        private final Timestamp day;
 
-        public TestRecord(int id, String name, BigDecimal weight) {
+        public TestRecord(int id, String name, BigDecimal weight, Timestamp day) {
             this.id = id;
             this.name = name;
             this.weight = weight;
+            this.day = day;
         }
     }
 
     public void testData(TestRecord... records) throws Exception {
-        String sql = "INSERT INTO TEST VALUES(?, ?, ?);";
         withConnection(conn -> {
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            try (PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + tableName)) {
+                stmt.execute();
+            }
+            try (PreparedStatement stmt = conn.prepareStatement("INSERT INTO " + tableName + " VALUES(?, ?, ?, ?);")) {
                 for (TestRecord record : records) {
                     stmt.setInt(1, record.id);
                     stmt.setString(2, record.name);
                     stmt.setBigDecimal(3, record.weight);
+                    stmt.setTimestamp(4, record.day);
                     stmt.execute();
                 }
             }
