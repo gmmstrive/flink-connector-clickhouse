@@ -14,7 +14,9 @@ import org.apache.flink.table.factories.FactoryUtil;
 import org.apache.flink.table.utils.TableSchemaUtils;
 import pl.touk.flink.ignite.dialect.IgniteDialect;
 
+import java.time.ZoneId;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class IgniteDynamicTableFactory implements DynamicTableSourceFactory, DynamicTableSinkFactory {
@@ -47,6 +49,30 @@ public class IgniteDynamicTableFactory implements DynamicTableSourceFactory, Dyn
             .noDefaultValue()
             .withDescription("the jdbc password.");
 
+    private static final ConfigOption<String> SCAN_PARTITION_COLUMN = ConfigOptions
+            .key("scan.partition.column")
+            .stringType()
+            .noDefaultValue()
+            .withDescription("the column name used for partitioning the input.");
+
+    private static final ConfigOption<String> SCAN_PARTITION_TIMEZONE = ConfigOptions
+            .key("scan.partition.timezone")
+            .stringType()
+            .noDefaultValue()
+            .withDescription("the timezone of data in column name used for partitioning the input.");
+
+    private static final ConfigOption<String> SCAN_PARTITION_LOWER_BOUND = ConfigOptions
+            .key("scan.partition.lower-bound")
+            .stringType()
+            .noDefaultValue()
+            .withDescription("day of the first partition.");
+
+    private static final ConfigOption<String> SCAN_PARTITION_UPPER_BOUND = ConfigOptions
+            .key("scan.partition.upper-bound")
+            .stringType()
+            .noDefaultValue()
+            .withDescription("day of the last partition.");
+
     @Override
     public String factoryIdentifier() {
         return IDENTIFIER;
@@ -64,7 +90,12 @@ public class IgniteDynamicTableFactory implements DynamicTableSourceFactory, Dyn
 
     @Override
     public Set<ConfigOption<?>> optionalOptions() {
-        return new HashSet<>();
+        Set<ConfigOption<?>> optionalOptions = new HashSet<>();
+        optionalOptions.add(SCAN_PARTITION_COLUMN);
+        optionalOptions.add(SCAN_PARTITION_LOWER_BOUND);
+        optionalOptions.add(SCAN_PARTITION_UPPER_BOUND);
+        optionalOptions.add(SCAN_PARTITION_TIMEZONE);
+        return optionalOptions;
     }
 
     @Override
@@ -79,12 +110,13 @@ public class IgniteDynamicTableFactory implements DynamicTableSourceFactory, Dyn
         helper.validate();
 
         JdbcOptions jdbcOptions = getJdbcOptions(config);
+        JdbcDatePartitionReadOptions readOptions = getJdbcReadOptions(config).orElse(null);
 
         // get table schema
         TableSchema physicalSchema = TableSchemaUtils.getPhysicalSchema(context.getCatalogTable().getSchema());
 
         // table source
-        return new IgniteDynamicTableSource(jdbcOptions, physicalSchema);
+        return new IgniteDynamicTableSource(jdbcOptions, readOptions, physicalSchema);
 
     }
 
@@ -104,6 +136,18 @@ public class IgniteDynamicTableFactory implements DynamicTableSourceFactory, Dyn
         readableConfig.getOptional(USERNAME).ifPresent(builder::setUsername);
         readableConfig.getOptional(PASSWORD).ifPresent(builder::setPassword);
         return builder.build();
+    }
+
+    private Optional<JdbcDatePartitionReadOptions> getJdbcReadOptions(ReadableConfig readableConfig) {
+        final Optional<String> partitionColumnName = readableConfig.getOptional(SCAN_PARTITION_COLUMN);
+        return partitionColumnName.map(columnName ->
+            JdbcDatePartitionReadOptions.builder()
+                    .setPartitionColumnName(partitionColumnName.get())
+                        .setTimezone(ZoneId.of(readableConfig.get(SCAN_PARTITION_TIMEZONE)))
+                        .setPartitionLowerBound(readableConfig.get(SCAN_PARTITION_LOWER_BOUND))
+                        .setPartitionUpperBound(readableConfig.get(SCAN_PARTITION_UPPER_BOUND))
+                    .build()
+        );
     }
 
 }
