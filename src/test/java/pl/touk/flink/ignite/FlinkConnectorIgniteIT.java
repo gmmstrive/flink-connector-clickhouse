@@ -160,7 +160,7 @@ public class FlinkConnectorIgniteIT {
     private IgniteSourceTableDDLBuilder igniteTableBuilder() {
         return new IgniteSourceTableDDLBuilder()
                 .withTableName(tableName)
-                .withColumnsDefinition(Arrays.asList("id INT NOT NULL",
+                .withColumnsDefinition(List.of("id INT NOT NULL",
                         "name STRING",
                         "weight DECIMAL(10,2)"))
                 .withIgniteUrl("jdbc:ignite:thin://127.0.0.1:" + ignitePort)
