@@ -2,10 +2,12 @@ package pl.touk.flink.ignite.ddl;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.List;
 
 public class IgniteSourceTableDDLBuilder {
 
     private String tableName;
+    private List<String> columnsDefinition;
     private String igniteUrl;
     private String igniteTableName;
     private LocalDate partitionLowerBound;
@@ -17,6 +19,11 @@ public class IgniteSourceTableDDLBuilder {
 
     public IgniteSourceTableDDLBuilder withTableName(String tableName) {
         this.tableName = tableName;
+        return this;
+    }
+
+    public IgniteSourceTableDDLBuilder withColumnsDefinition(List<String> columnsDefinition) {
+        this.columnsDefinition = columnsDefinition;
         return this;
     }
 
@@ -62,17 +69,15 @@ public class IgniteSourceTableDDLBuilder {
 
     public String build() {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("CREATE TABLE %s ("
-                        + " id INT NOT NULL,"
-                        + " name STRING,"
-                        + " weight DECIMAL(10,2)"
-                        + ") WITH ("
-                        + " 'connector' = 'ignite',"
-                        + " 'url' = '%s',"
-                        + " 'username' = '%s',"
-                        + " 'password' = '%s',"
-                        + " 'table-name' = '%s'",
-                tableName, igniteUrl, username, password, igniteTableName));
+        sb.append(String.format("CREATE TABLE %s (", tableName))
+                .append(String.join(",\n", columnsDefinition))
+                .append(String.format(") WITH ("
+                                + " 'connector' = 'ignite',"
+                                + " 'url' = '%s',"
+                                + " 'username' = '%s',"
+                                + " 'password' = '%s',"
+                                + " 'table-name' = '%s'",
+                        igniteUrl, username, password, igniteTableName));
 
         if (partitionColumn != null && partitionLowerBound != null && partitionUpperBound != null && timezone != null) {
             sb.append(String.format(", 'scan.partition.lower-bound' = '%s',"

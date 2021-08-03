@@ -26,6 +26,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,7 +76,7 @@ public class FlinkConnectorIgniteIT {
     void shouldRetrieveAllData() throws Exception {
         // given
         Timestamp day = Timestamp.valueOf("2021-06-24 00:00:00");
-        IgniteJdbcClient.TestRecord[] records = new IgniteJdbcClient.TestRecord[] {
+        IgniteJdbcClient.TestRecord[] records = new IgniteJdbcClient.TestRecord[]{
                 new IgniteJdbcClient.TestRecord(1, "alpha", BigDecimal.valueOf(10), day),
                 new IgniteJdbcClient.TestRecord(2, "alpha", BigDecimal.valueOf(11), day),
                 new IgniteJdbcClient.TestRecord(3, "bravo", BigDecimal.valueOf(5), day),
@@ -159,6 +160,9 @@ public class FlinkConnectorIgniteIT {
     private IgniteSourceTableDDLBuilder igniteTableBuilder() {
         return new IgniteSourceTableDDLBuilder()
                 .withTableName(tableName)
+                .withColumnsDefinition(Arrays.asList("id INT NOT NULL",
+                        "name STRING",
+                        "weight DECIMAL(10,2)"))
                 .withIgniteUrl("jdbc:ignite:thin://127.0.0.1:" + ignitePort)
                 .withIgniteTableName(IgniteJdbcClient.tableName)
                 .withUsername("ignite")
