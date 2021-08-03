@@ -14,8 +14,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import pl.touk.flink.ignite.ddl.IgniteSourceTableDDLBuilder;
 import pl.touk.flink.ignite.precondition.IgniteJdbcClient;
-import pl.touk.flink.ignite.precondition.IgniteSourceTableDDLBuilder;
 import pl.touk.flink.ignite.precondition.Preconditions;
 
 import java.io.File;
@@ -33,6 +33,7 @@ import static org.assertj.core.groups.Tuple.tuple;
 
 public class FlinkConnectorIgniteIT {
 
+    private static final String tableName = "ignite_source";
     private static int ignitePort;
     private static Ignite ignite;
     private static StreamTableEnvironment tableEnv;
@@ -67,7 +68,7 @@ public class FlinkConnectorIgniteIT {
 
     @AfterEach
     void afterEach() {
-        tableEnv.executeSql("DROP TABLE " + IgniteSourceTableDDLBuilder.tableName);
+        tableEnv.executeSql("DROP TABLE " + tableName);
     }
 
     @Test
@@ -83,10 +84,7 @@ public class FlinkConnectorIgniteIT {
         given.igniteClient(ignitePort)
                 .testData(records);
 
-        String sourceDDL = new IgniteSourceTableDDLBuilder()
-                .withIgniteUrl("jdbc:ignite:thin://127.0.0.1:" + ignitePort)
-                .withIgniteTableName(IgniteJdbcClient.tableName)
-                .build();
+        String sourceDDL = igniteTableBuilder().build();
 
         tableEnv.executeSql(sourceDDL);
 
@@ -123,9 +121,7 @@ public class FlinkConnectorIgniteIT {
         given.igniteClient(ignitePort)
                 .testData(records);
 
-        String sourceDDL = new IgniteSourceTableDDLBuilder()
-                .withIgniteUrl("jdbc:ignite:thin://127.0.0.1:" + ignitePort)
-                .withIgniteTableName(IgniteJdbcClient.tableName)
+        String sourceDDL = igniteTableBuilder()
                 .withPartitionLowerBound(rangeStart)
                 .withPartitionUpperBound(rangeEnd)
                 .withPartitionColumn("day_date")
@@ -160,4 +156,12 @@ public class FlinkConnectorIgniteIT {
         return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP);
     }
 
+    private IgniteSourceTableDDLBuilder igniteTableBuilder() {
+        return new IgniteSourceTableDDLBuilder()
+                .withTableName(tableName)
+                .withIgniteUrl("jdbc:ignite:thin://127.0.0.1:" + ignitePort)
+                .withIgniteTableName(IgniteJdbcClient.tableName)
+                .withUsername("ignite")
+                .withPassword("ignite");
+    }
 }
