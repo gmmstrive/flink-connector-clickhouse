@@ -1,6 +1,8 @@
 package pl.touk.flink.ignite;
 
+import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.ExecutionOptions;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.TableConfig;
@@ -51,6 +53,7 @@ public class StreamTableEnvironmentUtil {
                 .build();
 
         TableConfig tableConfig = new TableConfig();
+        tableConfig.getConfiguration().set(ExecutionOptions.RUNTIME_MODE, RuntimeExecutionMode.BATCH);
         FunctionCatalog functionCatalog = new FunctionCatalog(tableConfig, catalogManager, moduleManager);
 
         Map<String, String> executorProperties = settings.toExecutorProperties();

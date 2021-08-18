@@ -1,5 +1,6 @@
 package pl.touk.flink.ignite;
 
+import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.TableResult;
@@ -43,6 +44,7 @@ public class FlinkConnectorIgniteIT {
     @BeforeAll
     static void setUp() throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        env.setRuntimeMode(RuntimeExecutionMode.BATCH);
         tableEnv = StreamTableEnvironmentUtil.create(
                 env, EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build()
         );
