@@ -50,8 +50,9 @@ public class IgniteDynamicTableSource implements ScanTableSource {
                 .setPassword(options.getPassword().orElse(null))
                 .setQuery(query)
                 .setRowConverter(dialect.getRowConverter(rowType))
-                .setRowDataTypeInfo((TypeInformation<RowData>) runtimeProviderContext
-                        .createTypeInformation(tableSchema.toRowDataType()));
+                .setRowDataTypeInfo(runtimeProviderContext.createTypeInformation(tableSchema.toRowDataType()));
+//                .setRowDataTypeInfo((TypeInformation<RowData>) runtimeProviderContext
+//                        .createTypeInformation(tableSchema.toRowDataType()));
 
         if (readOptions != null) {
             LocalDate lowerBound = readOptions.getPartitionLowerBound();

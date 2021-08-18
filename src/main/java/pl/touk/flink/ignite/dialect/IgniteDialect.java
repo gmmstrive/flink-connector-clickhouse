@@ -27,6 +27,11 @@ public class IgniteDialect implements JdbcDialect {
     }
 
     @Override
+    public String getLimitClause(long l) {
+        return "LIMIT " + l;
+    }
+
+    @Override
     public Optional<String> defaultDriverName() {
         return Optional.of("org.apache.ignite.IgniteJdbcThinDriver");
     }
