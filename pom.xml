@@ -21,7 +21,7 @@ under the License.
 
     <groupId>pl.touk</groupId>
     <artifactId>flink-connector-ignite</artifactId>
-    <version>0.1.4-SNAPSHOT</version>
+    <version>flink_1_11_2-0.1.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Flink Connector Ignite</name>
@@ -36,7 +36,7 @@ under the License.
 
     <properties>
         <java.version>11</java.version>
-        <flink.version>1.11.1</flink.version>
+        <flink.version>1.11.2</flink.version>
         <log4j.version>2.12.1</log4j.version>
         <scala.binary.version>2.11</scala.binary.version>
         <ignite.version>2.10.0</ignite.version>
