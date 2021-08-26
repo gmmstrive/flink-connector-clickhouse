@@ -31,9 +31,4 @@ public class IgniteDialect implements JdbcDialect {
         return Optional.of("org.apache.ignite.IgniteJdbcThinDriver");
     }
 
-    @Override
-    public String quoteIdentifier(String identifier) {
-        return "`" + identifier + "`";
-    }
-
 }
