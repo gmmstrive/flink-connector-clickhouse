@@ -16,7 +16,7 @@ public class IgniteJdbcClient {
     }
 
     public void schemaCreated() throws Exception {
-        execute("CREATE TABLE IF NOT EXISTS " + tableName + " (ID INT PRIMARY KEY, NAME VARCHAR, WEIGHT DECIMAL, DAY_DATE TIMESTAMP);");
+        execute("CREATE TABLE IF NOT EXISTS " + tableName + " (\"id\" INT PRIMARY KEY, \"name\" VARCHAR, \"weight\" DECIMAL, \"dayDate\" TIMESTAMP);");
     }
 
     public static class TestRecord {

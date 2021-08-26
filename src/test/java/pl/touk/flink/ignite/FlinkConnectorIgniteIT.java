@@ -26,7 +26,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -125,7 +124,7 @@ public class FlinkConnectorIgniteIT {
         String sourceDDL = igniteTableBuilder()
                 .withPartitionLowerBound(rangeStart)
                 .withPartitionUpperBound(rangeEnd)
-                .withPartitionColumn("day_date")
+                .withPartitionColumn("dayDate")
                 .withTimezone(ZoneId.of("Europe/Warsaw"))
                 .build();
 
