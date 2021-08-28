@@ -21,7 +21,7 @@ under the License.
 
     <groupId>pl.touk</groupId>
     <artifactId>flink-connector-ignite</artifactId>
-    <version>0.1.6</version>
+    <version>0.1.7-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Flink Connector Ignite</name>
@@ -31,7 +31,7 @@ under the License.
         <connection>scm:git:ssh://git@github.com/TouK/flink-connector-ignite.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/TouK/flink-connector-ignite.git</developerConnection>
         <url>http://github.com/TouK/flink-connector-ignite</url>
-      <tag>flink-connector-ignite-0.1.6</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <properties>
