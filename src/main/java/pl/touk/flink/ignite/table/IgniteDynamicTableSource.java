@@ -4,11 +4,13 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.connector.jdbc.dialect.JdbcDialect;
 import org.apache.flink.connector.jdbc.internal.options.JdbcOptions;
 import org.apache.flink.connector.jdbc.table.JdbcRowDataInputFormat;
+import org.apache.flink.streaming.api.functions.source.InputFormatSourceFunction;
 import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.connector.ChangelogMode;
 import org.apache.flink.table.connector.source.DynamicTableSource;
 import org.apache.flink.table.connector.source.InputFormatProvider;
 import org.apache.flink.table.connector.source.ScanTableSource;
+import org.apache.flink.table.connector.source.SourceFunctionProvider;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.logical.RowType;
 
@@ -43,6 +45,7 @@ public class IgniteDynamicTableSource implements ScanTableSource {
 
         final RowType rowType = (RowType) tableSchema.toRowDataType().getLogicalType();
 
+        TypeInformation<RowData> typeInformation = runtimeProviderContext.createTypeInformation(tableSchema.toRowDataType());
         final JdbcRowDataInputFormat.Builder builder = JdbcRowDataInputFormat.builder()
                 .setDrivername(options.getDriverName())
                 .setDBUrl(options.getDbURL())
@@ -50,7 +53,7 @@ public class IgniteDynamicTableSource implements ScanTableSource {
                 .setPassword(options.getPassword().orElse(null))
                 .setQuery(query)
                 .setRowConverter(dialect.getRowConverter(rowType))
-                .setRowDataTypeInfo(runtimeProviderContext.createTypeInformation(tableSchema.toRowDataType()));
+                .setRowDataTypeInfo(typeInformation);
 
         if (readOptions != null) {
             LocalDate lowerBound = readOptions.getPartitionLowerBound();
@@ -65,8 +68,8 @@ public class IgniteDynamicTableSource implements ScanTableSource {
         }
 
         builder.setQuery(query);
-
-        return InputFormatProvider.of(builder.build());
+// As per comment in org.apache.flink.table.planner.plan.nodes.exec.batch.BatchExecLegacyTableSourceScan.createInput
+        return SourceFunctionProvider.of(new InputFormatSourceFunction<>(builder.build(), typeInformation), true);
 
     }
 
