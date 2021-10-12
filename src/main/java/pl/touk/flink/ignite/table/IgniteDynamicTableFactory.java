@@ -4,7 +4,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
 import org.apache.flink.configuration.ReadableConfig;
-import org.apache.flink.connector.jdbc.internal.options.JdbcOptions;
+import org.apache.flink.connector.jdbc.internal.options.JdbcConnectorOptions;
 import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.connector.sink.DynamicTableSink;
 import org.apache.flink.table.connector.source.DynamicTableSource;
@@ -109,14 +109,11 @@ public class IgniteDynamicTableFactory implements DynamicTableSourceFactory, Dyn
         // validate all options
         helper.validate();
 
-        JdbcOptions jdbcOptions = getJdbcOptions(config);
+        JdbcConnectorOptions jdbcOptions = getJdbcOptions(config);
         JdbcDatePartitionReadOptions readOptions = getJdbcReadOptions(config).orElse(null);
 
-        // get table schema
-        TableSchema physicalSchema = TableSchemaUtils.getPhysicalSchema(context.getCatalogTable().getSchema());
-
         // table source
-        return new IgniteDynamicTableSource(jdbcOptions, readOptions, physicalSchema);
+        return new IgniteDynamicTableSource(jdbcOptions, readOptions, context.getCatalogTable().getResolvedSchema());
 
     }
 
@@ -125,9 +122,9 @@ public class IgniteDynamicTableFactory implements DynamicTableSourceFactory, Dyn
         throw new NotImplementedException("Ignite dynamic sink not implemented yet");
     }
 
-    private JdbcOptions getJdbcOptions(ReadableConfig readableConfig) {
+    private JdbcConnectorOptions getJdbcOptions(ReadableConfig readableConfig) {
         final String url = readableConfig.get(URL);
-        final JdbcOptions.Builder builder = JdbcOptions.builder()
+        final JdbcConnectorOptions.Builder builder = JdbcConnectorOptions.builder()
                 .setDriverName(DRIVER_NAME)
                 .setDBUrl(url)
                 .setTableName(readableConfig.get(TABLE_NAME))

@@ -36,7 +36,7 @@ under the License.
 
     <properties>
         <java.version>11</java.version>
-        <flink.version>1.13.1</flink.version>
+        <flink.version>1.14.0</flink.version>
         <log4j.version>2.12.1</log4j.version>
         <scala.binary.version>2.11</scala.binary.version>
         <ignite.version>2.10.0</ignite.version>
@@ -128,7 +128,7 @@ under the License.
 
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-planner-blink_${scala.binary.version}</artifactId>
+            <artifactId>flink-table-planner_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
             <scope>test</scope>
         </dependency>
@@ -151,6 +151,14 @@ under the License.
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.30</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <!--            Ignite needs this version, as per https://stackoverflow.com/a/68774254/3132741 -->
+            <version>1.4.197</version>
             <scope>test</scope>
         </dependency>
 

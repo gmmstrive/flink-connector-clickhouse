@@ -2,16 +2,16 @@ package pl.touk.flink.ignite.table;
 
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.connector.jdbc.dialect.JdbcDialect;
-import org.apache.flink.connector.jdbc.internal.options.JdbcOptions;
+import org.apache.flink.connector.jdbc.internal.options.JdbcConnectorOptions;
 import org.apache.flink.connector.jdbc.table.JdbcRowDataInputFormat;
 import org.apache.flink.streaming.api.functions.source.InputFormatSourceFunction;
-import org.apache.flink.table.api.TableSchema;
+import org.apache.flink.table.catalog.ResolvedSchema;
 import org.apache.flink.table.connector.ChangelogMode;
 import org.apache.flink.table.connector.source.DynamicTableSource;
-import org.apache.flink.table.connector.source.InputFormatProvider;
 import org.apache.flink.table.connector.source.ScanTableSource;
 import org.apache.flink.table.connector.source.SourceFunctionProvider;
 import org.apache.flink.table.data.RowData;
+import org.apache.flink.table.types.DataType;
 import org.apache.flink.table.types.logical.RowType;
 
 import java.time.LocalDate;
@@ -19,11 +19,11 @@ import java.time.ZoneId;
 
 public class IgniteDynamicTableSource implements ScanTableSource {
 
-    private final JdbcOptions options;
+    private final JdbcConnectorOptions options;
     private final JdbcDatePartitionReadOptions readOptions;
-    private final TableSchema tableSchema;
+    private final ResolvedSchema tableSchema;
 
-    public IgniteDynamicTableSource(JdbcOptions options, JdbcDatePartitionReadOptions readOptions, TableSchema tableSchema) {
+    public IgniteDynamicTableSource(JdbcConnectorOptions options, JdbcDatePartitionReadOptions readOptions, ResolvedSchema tableSchema) {
         this.options = options;
         this.readOptions = readOptions;
         this.tableSchema = tableSchema;
@@ -41,11 +41,12 @@ public class IgniteDynamicTableSource implements ScanTableSource {
         final JdbcDialect dialect = options.getDialect();
 
         String query = dialect.getSelectFromStatement(
-                options.getTableName(), tableSchema.getFieldNames(), new String[0]);
+                options.getTableName(), tableSchema.getColumnNames().toArray(new String[0]), new String[0]);
 
-        final RowType rowType = (RowType) tableSchema.toRowDataType().getLogicalType();
+        DataType rowDataType = tableSchema.toPhysicalRowDataType();
+        final RowType rowType = (RowType) rowDataType.getLogicalType();
 
-        TypeInformation<RowData> typeInformation = runtimeProviderContext.createTypeInformation(tableSchema.toRowDataType());
+        TypeInformation<RowData> typeInformation = runtimeProviderContext.createTypeInformation(rowDataType);
         final JdbcRowDataInputFormat.Builder builder = JdbcRowDataInputFormat.builder()
                 .setDrivername(options.getDriverName())
                 .setDBUrl(options.getDbURL())
