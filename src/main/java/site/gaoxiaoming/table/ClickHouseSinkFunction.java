@@ -2,17 +2,15 @@ package site.gaoxiaoming.table;
 
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.connector.jdbc.internal.options.JdbcOptions;
+import org.apache.flink.connector.jdbc.internal.options.JdbcConnectorOptions;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 import org.apache.flink.table.data.RowData;
 import ru.yandex.clickhouse.BalancedClickhouseDataSource;
 import ru.yandex.clickhouse.ClickHouseConnection;
-import ru.yandex.clickhouse.ClickHouseDataSource;
 import ru.yandex.clickhouse.ClickHouseStatement;
 import ru.yandex.clickhouse.domain.ClickHouseFormat;
 import ru.yandex.clickhouse.settings.ClickHouseProperties;
 import ru.yandex.clickhouse.settings.ClickHouseQueryParam;
-
 import java.io.ByteArrayInputStream;
 import java.sql.SQLException;
 
@@ -25,14 +23,14 @@ public class ClickHouseSinkFunction extends RichSinkFunction<RowData> {
 
     private static final String MAX_PARALLEL_REPLICAS_VALUE = "2";
 
-    private final JdbcOptions jdbcOptions;
+    private final JdbcConnectorOptions jdbcOptions;
     private final SerializationSchema<RowData> serializationSchema;
 
     private ClickHouseConnection conn;
     private ClickHouseStatement stmt;
 
 
-    public ClickHouseSinkFunction(JdbcOptions jdbcOptions, SerializationSchema<RowData> serializationSchema) {
+    public ClickHouseSinkFunction(JdbcConnectorOptions jdbcOptions, SerializationSchema<RowData> serializationSchema) {
         this.jdbcOptions = jdbcOptions;
         this.serializationSchema = serializationSchema;
     }

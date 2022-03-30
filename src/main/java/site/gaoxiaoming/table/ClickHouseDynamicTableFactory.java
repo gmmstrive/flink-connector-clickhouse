@@ -4,7 +4,7 @@ import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
 import org.apache.flink.configuration.ReadableConfig;
-import org.apache.flink.connector.jdbc.internal.options.JdbcOptions;
+import org.apache.flink.connector.jdbc.internal.options.JdbcConnectorOptions;
 import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.connector.format.EncodingFormat;
 import org.apache.flink.table.connector.sink.DynamicTableSink;
@@ -92,7 +92,7 @@ public class ClickHouseDynamicTableFactory implements DynamicTableSourceFactory,
         // validate all options
         helper.validate();
 
-        JdbcOptions jdbcOptions = getJdbcOptions(config);
+        JdbcConnectorOptions jdbcOptions = getJdbcOptions(config);
 
         // get table schema
         TableSchema physicalSchema = TableSchemaUtils.getPhysicalSchema(context.getCatalogTable().getSchema());
@@ -119,7 +119,7 @@ public class ClickHouseDynamicTableFactory implements DynamicTableSourceFactory,
         helper.validate();
 
         // get the validated options
-        JdbcOptions jdbcOptions = getJdbcOptions(config);
+        JdbcConnectorOptions jdbcOptions = getJdbcOptions(config);
 
         // derive the produced data type (excluding computed columns) from the catalog table
         final DataType dataType = context.getCatalogTable().getSchema().toPhysicalRowDataType();
@@ -128,9 +128,9 @@ public class ClickHouseDynamicTableFactory implements DynamicTableSourceFactory,
         return new ClickHouseDynamicTableSink(jdbcOptions, encodingFormat, dataType);
     }
 
-    private JdbcOptions getJdbcOptions(ReadableConfig readableConfig) {
+    private JdbcConnectorOptions getJdbcOptions(ReadableConfig readableConfig) {
         final String url = readableConfig.get(URL);
-        final JdbcOptions.Builder builder = JdbcOptions.builder()
+        final JdbcConnectorOptions.Builder builder = JdbcConnectorOptions.builder()
                 .setDriverName(DRIVER_NAME)
                 .setDBUrl(url)
                 .setTableName(readableConfig.get(TABLE_NAME))

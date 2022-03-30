@@ -1,15 +1,13 @@
 package site.gaoxiaoming.table;
 
-import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.connector.jdbc.dialect.JdbcDialect;
-import org.apache.flink.connector.jdbc.internal.options.JdbcOptions;
+import org.apache.flink.connector.jdbc.internal.options.JdbcConnectorOptions;
 import org.apache.flink.connector.jdbc.table.JdbcRowDataInputFormat;
 import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.connector.ChangelogMode;
 import org.apache.flink.table.connector.source.DynamicTableSource;
 import org.apache.flink.table.connector.source.InputFormatProvider;
 import org.apache.flink.table.connector.source.ScanTableSource;
-import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.types.logical.RowType;
 
 /**
@@ -17,10 +15,10 @@ import org.apache.flink.table.types.logical.RowType;
  */
 public class ClickHouseDynamicTableSource implements ScanTableSource {
 
-    private final JdbcOptions options;
+    private final JdbcConnectorOptions options;
     private final TableSchema tableSchema;
 
-    public ClickHouseDynamicTableSource(JdbcOptions options, TableSchema tableSchema) {
+    public ClickHouseDynamicTableSource(JdbcConnectorOptions options, TableSchema tableSchema) {
         this.options = options;
         this.tableSchema = tableSchema;
     }
@@ -48,8 +46,7 @@ public class ClickHouseDynamicTableSource implements ScanTableSource {
                 .setPassword(options.getPassword().orElse(null))
                 .setQuery(query)
                 .setRowConverter(dialect.getRowConverter(rowType))
-                .setRowDataTypeInfo((TypeInformation<RowData>) runtimeProviderContext
-                        .createTypeInformation(tableSchema.toRowDataType()));
+                .setRowDataTypeInfo(runtimeProviderContext.createTypeInformation(tableSchema.toRowDataType()));;
 
         return InputFormatProvider.of(builder.build());
 
