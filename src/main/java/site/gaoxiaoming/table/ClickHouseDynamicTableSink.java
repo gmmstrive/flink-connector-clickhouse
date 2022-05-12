@@ -1,7 +1,7 @@
 package site.gaoxiaoming.table;
 
 import org.apache.flink.api.common.serialization.SerializationSchema;
-import org.apache.flink.connector.jdbc.internal.options.JdbcOptions;
+import org.apache.flink.connector.jdbc.internal.options.JdbcConnectorOptions;
 import org.apache.flink.table.connector.ChangelogMode;
 import org.apache.flink.table.connector.format.EncodingFormat;
 import org.apache.flink.table.connector.sink.DynamicTableSink;
@@ -14,11 +14,11 @@ import org.apache.flink.table.types.DataType;
  */
 public class ClickHouseDynamicTableSink implements DynamicTableSink {
 
-    private final JdbcOptions jdbcOptions;
+    private final JdbcConnectorOptions jdbcOptions;
     private final EncodingFormat<SerializationSchema<RowData>> encodingFormat;
     private final DataType dataType;
 
-    public ClickHouseDynamicTableSink(JdbcOptions jdbcOptions, EncodingFormat<SerializationSchema<RowData>> encodingFormat, DataType dataType) {
+    public ClickHouseDynamicTableSink(JdbcConnectorOptions jdbcOptions, EncodingFormat<SerializationSchema<RowData>> encodingFormat, DataType dataType) {
         this.jdbcOptions = jdbcOptions;
         this.encodingFormat = encodingFormat;
         this.dataType = dataType;

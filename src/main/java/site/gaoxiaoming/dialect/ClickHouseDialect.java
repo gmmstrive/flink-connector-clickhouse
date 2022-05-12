@@ -31,6 +31,11 @@ public class ClickHouseDialect implements JdbcDialect {
     }
 
     @Override
+    public String getLimitClause(long limit) {
+        return "LIMIT " + limit;
+    }
+
+    @Override
     public Optional<String> defaultDriverName() {
         return Optional.of("ru.yandex.clickhouse.ClickHouseDriver");
     }
@@ -38,6 +43,11 @@ public class ClickHouseDialect implements JdbcDialect {
     @Override
     public String quoteIdentifier(String identifier) {
         return "`" + identifier + "`";
+    }
+
+    @Override
+    public Optional<String> getUpsertStatement(String tableName, String[] fieldNames, String[] uniqueKeyFields) {
+        return Optional.empty();
     }
 
 }
